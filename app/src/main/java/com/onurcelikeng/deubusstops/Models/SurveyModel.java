@@ -3,25 +3,19 @@ package com.onurcelikeng.deubusstops.Models;
 import java.io.Serializable;
 
 public class SurveyModel implements Serializable {
+    private String nameSurname;
+    private String email;
+    private String phone;
+    private String gender;
+    private String birthdate;
+    private String busStop;
+    private String opinion;
+    private int point;
 
-    public String nameSurname;
-
-    public String email;
-
-    public String phone;
-
-    public String gender;
-
-    public String birthdate;
-
-    public String busStop;
-
-    public String opinion;
-
-    public int point;
 
     public SurveyModel() {
     }
+
 
     public String getNameSurname() {
         return nameSurname;

@@ -12,9 +12,9 @@
         android:background="#A68F34">
 
         <TextView
+            android:id="@+id/stopName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Anket"
             android:layout_centerVertical="true"
             android:textAlignment="center"
             android:textColor="#ffffff"
@@ -151,24 +151,6 @@
                     android:id="@+id/birthdateCalendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Durak seçiniz"
-                    android:textSize="16sp"/>
-
-                <Spinner
-                    android:id="@+id/stopSnipper"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
             </LinearLayout>
 
             <LinearLayout

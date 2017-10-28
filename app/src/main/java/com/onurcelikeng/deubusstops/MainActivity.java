@@ -1,7 +1,9 @@
 package com.onurcelikeng.deubusstops;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onurcelikeng.deubusstops.Models.SurveyModel;
@@ -30,13 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup _genderRadioGroup;
     private RadioButton _genderRadioButton;
     private CalendarView _birthdateCalendarView;
-    private Spinner _stopSnipper;
     private EditText _opinionEditText;
     private Button _sendButton;
     private RatingBar _pointRatingBar;
-    private String[] spinner;
-    private String selectedBusStop;
     private String currentDate;
+    private TextView _stopName;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +50,16 @@ public class MainActivity extends AppCompatActivity {
         _phoneEditText = (EditText) findViewById(R.id.phoneEditText);
         _genderRadioGroup = (RadioGroup) findViewById(R.id.genderRadioGroup);
         _birthdateCalendarView = (CalendarView) findViewById(R.id.birthdateCalendarView);
-        _stopSnipper = (Spinner) findViewById(R.id.stopSnipper);
         _pointRatingBar = (RatingBar) findViewById(R.id.pointRatingBar);
         _opinionEditText = (EditText) findViewById(R.id.opinionEditText);
         _sendButton = (Button) findViewById(R.id.sendButton);
+        _stopName = (TextView) findViewById(R.id.stopName);
 
-        spinner = new String[]{
-                "Durak1", "Durak2", "Durak3", "Durak4", "Durak5"
-        };
+        Intent intent = getIntent();
+        final String name = (String) intent.getStringExtra("name");
+        id = (String) intent.getStringExtra("id");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinner);
-        _stopSnipper.setAdapter(adapter);
-
-        _stopSnipper.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedBusStop = spinner[i];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        _stopName.setText(name);
 
         _sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 survey.setPhone(_phoneEditText.getText().toString());
                 survey.setGender(_genderRadioButton.getText().toString());
                 survey.setBirthdate(currentDate);
-                survey.setBusStop(selectedBusStop);
+                survey.setBusStop(name);
                 survey.setPoint(_pointRatingBar.getNumStars());
                 survey.setOpinion(_opinionEditText.getText().toString());
 
@@ -111,8 +100,17 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 String result = data.getStringExtra("result");
-                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
-
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle(result);
+                int voteCount = BusStopActivity.stopList.get(Integer.parseInt(id)).getVoteCount() + 1;
+                alertDialog.setMessage("Durak Adı: " + BusStopActivity.stopList.get(Integer.parseInt(id)).getName() + "\nAnkete katılan kişi sayısı: " + voteCount);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Kapat",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(), "İşlem iptal edildi.", Toast.LENGTH_LONG).show();

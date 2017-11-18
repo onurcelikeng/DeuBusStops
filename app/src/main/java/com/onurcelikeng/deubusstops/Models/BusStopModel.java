@@ -20,6 +20,10 @@ public class BusStopModel implements Serializable {
         this.voteCount = voteCount;
     }
 
+    public BusStopModel() {
+
+    }
+
 
     public int getId() {
         return id;

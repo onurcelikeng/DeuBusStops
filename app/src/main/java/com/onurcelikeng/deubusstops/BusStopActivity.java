@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.onurcelikeng.deubusstops.Helpers.DBHandler;
 import com.onurcelikeng.deubusstops.Models.BusStopModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +34,12 @@ public class BusStopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_stop);
 
-        stopList.add(new BusStopModel(40894, "Tınaztepe", "38.368584", "27.210985", "4.3", 5));
-        stopList.add(new BusStopModel(40127, "Mühendislik Fakultesi", "38.369537", "27.207884", "3.8", 3));
-        stopList.add(new BusStopModel(40129, "Mimarlık Fakultesi", "38.369138", "27.207103", "4.1", 15));
-        stopList.add(new BusStopModel(40901, "Teknopark", "38.367224", "27.205502", "4.9", 45));
-        stopList.add(new BusStopModel(40897, "İşletme Fakultesi", "38.368160", "27.202866", "2.7", 33));
+        DBHandler db = new DBHandler(this);
+        if(db.getAllBusStops().size() == 0) {
+            db.LoadBusStops();
+        }
+
+        stopList = db.getAllBusStops();
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -62,7 +65,7 @@ public class BusStopActivity extends AppCompatActivity {
                                 .title(model.getName())
                                 .anchor(0.5f, 0.5f);
                         positionMarker = googleMap.addMarker(positionMarkerOptions);
-                        positionMarker.setTag(i);
+                        positionMarker.setTag(model.getId());
                     }
 
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Double.parseDouble(stopList.get(0).getLatitude()),Double.parseDouble(stopList.get(0).getLongitude()))));

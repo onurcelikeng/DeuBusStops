@@ -20,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onurcelikeng.deubusstops.Helpers.DBHandler;
+import com.onurcelikeng.deubusstops.Models.BusStopModel;
 import com.onurcelikeng.deubusstops.Models.SurveyModel;
 
 import java.text.DateFormat;
@@ -102,8 +104,16 @@ public class MainActivity extends AppCompatActivity {
                 String result = data.getStringExtra("result");
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                 alertDialog.setTitle(result);
-                int voteCount = BusStopActivity.stopList.get(Integer.parseInt(id)).getVoteCount() + 1;
-                alertDialog.setMessage("Durak Adı: " + BusStopActivity.stopList.get(Integer.parseInt(id)).getName() + "\nAnkete katılan kişi sayısı: " + voteCount);
+
+                DBHandler db = new DBHandler(getApplicationContext());
+                BusStopModel model = db.getBusStop(Integer.parseInt(id));
+
+                model.setVoteCount(model.getVoteCount() + 1);
+                model.setTotalPoint(model.getTotalPoint() + _pointRatingBar.getNumStars());
+                db.updateBusStop(model);
+                BusStopActivity.stopList = db.getAllBusStops();
+
+                alertDialog.setMessage("Durak Adı: " + BusStopActivity.stopList.get(Integer.parseInt(id)).getName() + "\nAnkete katılan kişi sayısı: " + model.getVoteCount() + "\nDurağın toplam puanı: " + model.getTotalPoint());
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Kapat",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {

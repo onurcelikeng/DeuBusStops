@@ -71,18 +71,24 @@ public class MainActivity extends AppCompatActivity {
                 _genderRadioButton = (RadioButton) findViewById(selectedId);
                 SurveyModel survey = new SurveyModel();
 
-                survey.setNameSurname(_nameSurnameEditText.getText().toString());
-                survey.setEmail(_emailEditText.getText().toString());
-                survey.setPhone(_phoneEditText.getText().toString());
-                survey.setGender(_genderRadioButton.getText().toString());
-                survey.setBirthdate(currentDate);
-                survey.setBusStop(name);
-                survey.setPoint(_pointRatingBar.getNumStars());
-                survey.setOpinion(_opinionEditText.getText().toString());
+                if(!_nameSurnameEditText.getText().toString().equals("") && !_emailEditText.getText().toString().equals("") && !_phoneEditText.getText().toString().equals("") &&
+                        !_genderRadioButton.getText().toString().equals("") && !_opinionEditText.getText().toString().equals("")) {
+                    survey.setNameSurname(_nameSurnameEditText.getText().toString());
+                    survey.setEmail(_emailEditText.getText().toString());
+                    survey.setPhone(_phoneEditText.getText().toString());
+                    survey.setGender(_genderRadioButton.getText().toString());
+                    survey.setBirthdate(currentDate);
+                    survey.setBusStop(name);
+                    survey.setPoint(Float.toString(_pointRatingBar.getRating()));
+                    survey.setOpinion(_opinionEditText.getText().toString());
 
-                Intent intent = new Intent(MainActivity.this, SurveyResultActivity.class);
-                intent.putExtra("survey", survey);
-                startActivityForResult(intent, 1);
+                    Intent intent = new Intent(MainActivity.this, SurveyResultActivity.class);
+                    intent.putExtra("survey", survey);
+                    startActivityForResult(intent, 1);
+                } else {
+                    Toast.makeText(getApplication(), "Eksik bilgi girdiniz!",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -109,14 +115,16 @@ public class MainActivity extends AppCompatActivity {
                 BusStopModel model = db.getBusStop(Integer.parseInt(id));
 
                 model.setVoteCount(model.getVoteCount() + 1);
-                model.setTotalPoint(model.getTotalPoint() + _pointRatingBar.getNumStars());
+                model.setTotalPoint(Float.toString(Float.parseFloat(model.getTotalPoint()) + _pointRatingBar.getRating()));
                 db.updateBusStop(model);
                 BusStopActivity.stopList = db.getAllBusStops();
 
-                alertDialog.setMessage("Durak Adı: " + BusStopActivity.stopList.get(Integer.parseInt(id)).getName() + "\nAnkete katılan kişi sayısı: " + model.getVoteCount() + "\nDurağın toplam puanı: " + model.getTotalPoint());
+                alertDialog.setMessage("Durak Adı: " + BusStopActivity.stopList.get(Integer.parseInt(id) - 1).getName() + "\nAnkete katılan kişi sayısı: " + model.getVoteCount() + "\nDurağın toplam puanı: " + model.getTotalPoint());
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Kapat",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(MainActivity.this, BusStopActivity.class);
+                                startActivity(intent);
                                 dialog.dismiss();
                             }
                         });

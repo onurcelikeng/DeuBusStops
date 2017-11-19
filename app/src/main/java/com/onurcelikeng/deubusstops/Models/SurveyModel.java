@@ -10,7 +10,7 @@ public class SurveyModel implements Serializable {
     private String birthdate;
     private String busStop;
     private String opinion;
-    private int point;
+    private String point;
 
 
     public SurveyModel() {
@@ -73,11 +73,11 @@ public class SurveyModel implements Serializable {
         this.opinion = opinion;
     }
 
-    public float getPoint() {
+    public String getPoint() {
         return point;
     }
 
-    public void setPoint(int point) {
+    public void setPoint(String point) {
         this.point = point;
     }
 }
